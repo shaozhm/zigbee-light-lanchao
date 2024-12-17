@@ -1,0 +1,19 @@
+address: raspberrypi.local
+port: 1883
+topics:
+  - zigbee2mqtt/ikea-styrbar-white-c-1
+  - zigbee2mqtt/ikea-styrbar-white-c-2
+  - zigbee2mqtt/ikea-styrbar-white-c-3
+  - zigbee2mqtt/ikea-styrbar-sliver-b-1
+  - zigbee2mqtt/ikea-styrbar-sliver-b-2
+  - zigbee2mqtt/ikea-styrbar-sliver-b-3
+  - zigbee2mqtt/ikea-tradfri-1
+  - zigbee2mqtt/sensor-1
+  - zigbee2mqtt/sensor-2
+  - zigbee2mqtt/door-1
+  - zigbee2mqtt/door-2
+  - zigbee2mqtt/button-1
+  - zigbee2mqtt/button-2
+  - zigbee2mqtt/bedroom
+  - zigbee2mqtt/kitchen
+  - zigbee2mqtt/water-leak-1

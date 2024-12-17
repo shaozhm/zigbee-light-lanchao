@@ -1,0 +1,15 @@
+{
+  "name": "zigbee-light",
+  "version": "1.0.0",
+  "description": "for zigbee2mqtt",
+  "license": "MIT",
+  "main": "bin/main.js",
+  "bin": {
+    "zigbee-light": "bin/main.js"
+  },
+  "dependencies": {
+    "mqtt": "^5.1.0",
+    "lodash": "4.17.21",
+    "yaml": "2.2.1"
+  }
+}

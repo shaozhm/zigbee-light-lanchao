@@ -1,0 +1,17 @@
+[Unit]
+Description=Zigbee Light
+Requires=mosquitto.service
+After=zigbee2mqtt.service mosquitto.service
+After=network.target
+
+[Service]
+ExecStart=/home/pi/node-v20.18.0-linux-armv7l/bin/node .
+WorkingDirectory=/home/pi/zigbee-light
+StandardOutput=inherit
+StandardError=inherit
+Restart=on-failure
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target

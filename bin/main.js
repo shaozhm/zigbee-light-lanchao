@@ -142,6 +142,11 @@ client.on('message', function(topic, message) {
             console.error(error)
           }
         })
+        client.publish('zigbee2mqtt/tradfri-1/set', '{ "state": "OFF" }', { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }
+        })
       }
     }
 
@@ -157,13 +162,23 @@ client.on('message', function(topic, message) {
     };
 
     // 厕所的主开关
-    if (checkTopicProperty('ikea-styrbar-white-c-3', 'action')) {
+    if (checkTopicProperty('ikea-styrbar-white-c-2', 'action')) {
       if (mesgJSON.action === 'on') {
+        client.publish('zigbee2mqtt/tradfri-1/set', '{ "state": "ON" }', { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }
+        })
         keepLight2 = true;
         disableSensor2 = true;
         console.log(`Disable Sensor 2 set to: `, disableSensor2);
       }
       if (mesgJSON.action === 'off') {
+        client.publish('zigbee2mqtt/tradfri-1/set', '{ "state": "OFF" }', { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }
+        })
         keepLight2 = false;
         setTimeout(fnDisableSensor2Off, 3000);
       }
@@ -175,10 +190,20 @@ client.on('message', function(topic, message) {
       console.log('door-2 contact', door2contact);
       if (door2contact) {
         // 如果门关着，人体红外感应器要停止检测。
+        client.publish('zigbee2mqtt/tradfri-1/set', '{ "state": "ON" }', { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }
+        })
         keepLight2 = true;
         disableSensor2 = true;
       } else if (!waterLeak) {
         // 如果门开启，水浸检测器没有检测到水，说明没人在洗澡，需要开启人体红外感应器。
+        client.publish('zigbee2mqtt/tradfri-1/set', '{ "state": "OFF" }', { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }
+        })
         keepLight2 = false;
         disableSensor2 = false;
       }

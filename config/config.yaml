@@ -17,3 +17,4 @@ topics:
   - zigbee2mqtt/bedroom
   - zigbee2mqtt/kitchen
   - zigbee2mqtt/water-leak-1
+  - zigbee2mqtt/tradfri-1

@@ -247,5 +247,30 @@ client.on('message', function(topic, message) {
       }
       console.log(`Disable Sensor 2 set to: `, disableSensor2);
     }
+
+    // 主卧窗帘
+    if (checkTopicProperty('ikea-styrbar-silver-b-1', 'action') || 
+        checkTopicProperty('ikea-styrbar-silver-b-2', 'action') ||
+        checkTopicProperty('ikea-styrbar-silver-b-3', 'action')) {
+      console.log(topic, mesgJSON);
+      if (mesgJSON.action === 'arrow_left_click') {
+        // 关窗帘
+        const curtainTopic = 'zigbee2mqtt/curtain-1/set';
+        client.publish(curtainTopic, '{ "state": "close" }', { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }
+        })
+      }
+      if (mesgJSON.action === 'arrow_right_click') {
+        //  开窗帘
+        const curtainTopic = 'zigbee2mqtt/curtain-1/set';
+        client.publish(curtainTopic, '{ "state": "open" }', { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }
+        })
+      }
+    }
   }
 });

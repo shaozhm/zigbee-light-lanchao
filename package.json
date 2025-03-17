@@ -10,6 +10,7 @@
   "dependencies": {
     "mqtt": "^5.1.0",
     "lodash": "4.17.21",
-    "yaml": "2.2.1"
+    "yaml": "2.2.1",
+    "moment": "2.30.1"
   }
 }

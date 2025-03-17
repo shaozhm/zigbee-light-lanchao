@@ -57,6 +57,11 @@ client.on('message', function(topic, message) {
     const mesgJSON = JSON.parse(message.toString());
     const checkTopicProperty = (topicEndString, property) => topic.endsWith(topicEndString) && Lodash.isObject(mesgJSON) && Lodash.has(mesgJSON, property) && !Lodash.isNil(mesgJSON[property]);
 
+    // 光照传感器
+    if (checkTopicProperty('light-sensor-1', 'illuminance_lux')) {
+      console.log('bedroom light - illuminance - ', mesgJSON.illuminance, ' - illuminance_lux - ', mesgJSON.illuminance_lux);
+    }
+
     // 延迟开启厨房人体红外感应器
     const fnDisableSensor1Off = () => {
       if (!keepLight1) {
@@ -114,12 +119,29 @@ client.on('message', function(topic, message) {
     }
 
     // 厨房的门感应器
-    if (checkTopicProperty('door-1', 'contact') && !mesgJSON.contact) {
-      client.publish('zigbee2mqtt/hue-bulbs-c/set', '{"state": "ON"}', { qos: 0, retain: false }, (error) => {
-        if (error) {
-          console.error(error)
-        }
-      })
+    if (checkTopicProperty('door-1', 'contact')) {
+      if (!mesgJSON.contact) {
+        client.publish('zigbee2mqtt/ikea-led-strip-driver-4/set',
+          '{"state": "ON","brightness":90,"transition":3}',
+          { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }
+        })
+        client.publish('zigbee2mqtt/hue-bulbs-c/set', '{"state": "ON"}', { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }
+        })
+      } else {
+        client.publish('zigbee2mqtt/ikea-led-strip-driver-4/set',
+          '{"state": "OFF"}',
+          { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }
+        })
+      }
     }
     
     // 主卧的床前总控开关
@@ -225,28 +247,28 @@ client.on('message', function(topic, message) {
     }
 
     // 厕所的水浸检测器
-    if (checkTopicProperty('water-leak-1', 'water_leak')) {
-      waterLeak = mesgJSON.water_leak;
-      console.log('Water Leak: ', waterLeak);
-      if (waterLeak) {
-        // 如果水浸检测器检测到水，说明在洗澡，人体红外感应器要停止检测。
-        keepLight2 = true;
-        disableSensor2 = true;
+    // if (checkTopicProperty('water-leak-1', 'water_leak')) {
+    //   waterLeak = mesgJSON.water_leak;
+    //   console.log('Water Leak: ', waterLeak);
+    //   if (waterLeak) {
+    //     // 如果水浸检测器检测到水，说明在洗澡，人体红外感应器要停止检测。
+    //     keepLight2 = true;
+    //     disableSensor2 = true;
 
-        const topic = 'zigbee2mqtt/ikea-led-strip-driver-3/set';
-        // 开灯
-        client.publish(topic, '{ "state": "ON" }', { qos: 0, retain: false }, (error) => {
-          if (error) {
-            console.error(error)
-          }
-        })
-      } else if (!door2contact) {
-        // 如果水浸检测器检测到没水，说明洗澡结束，需要查看厕所门是否在打开状态，如果门在打开状态，需要开启人体红外感应器。
-        keepLight2 = false;
-        disableSensor2 = false;
-      }
-      console.log(`Disable Sensor 2 set to: `, disableSensor2);
-    }
+    //     const topic = 'zigbee2mqtt/ikea-led-strip-driver-3/set';
+    //     // 开灯
+    //     client.publish(topic, '{ "state": "ON" }', { qos: 0, retain: false }, (error) => {
+    //       if (error) {
+    //         console.error(error)
+    //       }
+    //     })
+    //   } else if (!door2contact) {
+    //     // 如果水浸检测器检测到没水，说明洗澡结束，需要查看厕所门是否在打开状态，如果门在打开状态，需要开启人体红外感应器。
+    //     keepLight2 = false;
+    //     disableSensor2 = false;
+    //   }
+    //   console.log(`Disable Sensor 2 set to: `, disableSensor2);
+    // }
 
     // 主卧窗帘
     if (checkTopicProperty('ikea-styrbar-silver-b-1', 'action') || 

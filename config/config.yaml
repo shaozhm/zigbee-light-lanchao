@@ -18,3 +18,4 @@ topics:
   - zigbee2mqtt/kitchen
   - zigbee2mqtt/water-leak-1
   - zigbee2mqtt/tradfri-1
+  - zigbee2mqtt/light-sensor-1

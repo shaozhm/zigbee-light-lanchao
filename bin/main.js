@@ -3,6 +3,7 @@ const mqtt = require('mqtt');
 const Path = require('path');
 const Fs = require('fs');
 const { _: Lodash } = require('lodash');
+const moment = require('moment');
 const {
   read,
 } = require('../src/yaml');
@@ -45,7 +46,7 @@ let keepLight1 = true;
 
 // 厕所的全局变量定义
 let disableSensor2 = false;
-let keepLight2 = false;
+let keepLight2 = true;
 let door2contact = false;
 let waterLeak = false;
 
@@ -211,24 +212,13 @@ client.on('message', function(topic, message) {
       door2contact = mesgJSON.contact;
       console.log('door-2 contact', door2contact);
       if (door2contact) {
-        // 如果门关着，人体红外感应器要停止检测。
         client.publish('zigbee2mqtt/tradfri-1/set', '{ "state": "ON" }', { qos: 0, retain: false }, (error) => {
           if (error) {
             console.error(error)
           }
         })
-        keepLight2 = true;
-        disableSensor2 = true;
-      } else if (!waterLeak) {
-        // 如果门开启，水浸检测器没有检测到水，说明没人在洗澡，需要开启人体红外感应器。
-        client.publish('zigbee2mqtt/tradfri-1/set', '{ "state": "OFF" }', { qos: 0, retain: false }, (error) => {
-          if (error) {
-            console.error(error)
-          }
-        })
-        keepLight2 = false;
-        disableSensor2 = false;
       }
+      // 如果门关着，人体红外感应器要停止检测。
       keepLight2 = mesgJSON.contact;
       disableSensor2 = mesgJSON.contact;
       console.log(`Disable Sensor 2 set to: `, disableSensor2);

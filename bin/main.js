@@ -211,16 +211,14 @@ client.on('message', function(topic, message) {
     if (checkTopicProperty('door-2', 'contact')) {
       door2contact = mesgJSON.contact;
       console.log('door-2 contact', door2contact);
-      if (door2contact) {
-        client.publish('zigbee2mqtt/tradfri-1/set', '{ "state": "ON" }', { qos: 0, retain: false }, (error) => {
-          if (error) {
-            console.error(error)
-          }
-        })
-      }
+      const tradfri_status = door2contact ? '{ "state": "ON" }' : '{ "state": "OFF" }';
+      client.publish('zigbee2mqtt/tradfri-1/set', tradfri_status, { qos: 0, retain: false }, (error) => {
+        if (error) {
+          console.error(error)
+        }
+      })
       // 如果门关着，人体红外感应器要停止检测。
-      keepLight2 = mesgJSON.contact;
-      disableSensor2 = mesgJSON.contact;
+      keepLight2 = disableSensor2 = mesgJSON.contact;
       console.log(`Disable Sensor 2 set to: `, disableSensor2);
     }
 
@@ -235,30 +233,6 @@ client.on('message', function(topic, message) {
         }
       })
     }
-
-    // 厕所的水浸检测器
-    // if (checkTopicProperty('water-leak-1', 'water_leak')) {
-    //   waterLeak = mesgJSON.water_leak;
-    //   console.log('Water Leak: ', waterLeak);
-    //   if (waterLeak) {
-    //     // 如果水浸检测器检测到水，说明在洗澡，人体红外感应器要停止检测。
-    //     keepLight2 = true;
-    //     disableSensor2 = true;
-
-    //     const topic = 'zigbee2mqtt/ikea-led-strip-driver-3/set';
-    //     // 开灯
-    //     client.publish(topic, '{ "state": "ON" }', { qos: 0, retain: false }, (error) => {
-    //       if (error) {
-    //         console.error(error)
-    //       }
-    //     })
-    //   } else if (!door2contact) {
-    //     // 如果水浸检测器检测到没水，说明洗澡结束，需要查看厕所门是否在打开状态，如果门在打开状态，需要开启人体红外感应器。
-    //     keepLight2 = false;
-    //     disableSensor2 = false;
-    //   }
-    //   console.log(`Disable Sensor 2 set to: `, disableSensor2);
-    // }
 
     // 主卧窗帘
     if (checkTopicProperty('ikea-styrbar-silver-b-1', 'action') || 
